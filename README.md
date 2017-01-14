@@ -30,7 +30,7 @@ and you will see some nice messages telling you that there is a server listening
   }
 }
 ```
-This query creates a new table called "people" that has a schema with a fifteen character long name field and a three character long age field. If it succeeds, you'll get a 1 back.
+This query creates a new table called "people" that has a schema with a fifteen character long name field and a three character long age field. If it succeeds, you'll get a `1` back. The number one means "I did it!" in computer speak.
 ```javascript
 {
 "operation":"SAVE",
