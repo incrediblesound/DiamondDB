@@ -54,3 +54,7 @@ This query saves the record contained in the "body" field of the post to the "pe
 }
 ```
 This query fetches and returns the record from the "people" table with the ID of 6.
+
+Contributing
+------------
+If you think DiamondDB is worth contributing to (still an open question) then feel free to open issues! I don't think Node.js is really well suited to running a database, but it is a fun project and I hope the code is simple and easy to understand.
