@@ -12,11 +12,11 @@ DiamondDB is written is futuristic JavaScript so you'll need to run
 `npm install`
 and
 `webpack`
-to build the package. Then you can run
+to build the package. Then you can run `mkdir data` to make the folder for storing records and
 ```shell
 node server
 ```
-and you will see some nice messages telling you that there is a server listening for requests and a queue waiting for jobs. Next you can POST some JSON to `localhost:2020` to interact with the database. Here are some examples:
+which will give you some nice messages telling you that there is a server listening for requests and a queue waiting for jobs. Next you can POST some JSON to `localhost:2020` to interact with the database. Here are some examples:
 
 ```javascript
 {
