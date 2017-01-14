@@ -63,7 +63,7 @@ export default class Store {
       return append(fileName, recordString).then(this.updateMeta).then(() => id)
     }
   }
-  load(tableName, id){
+  fetch(tableName, id){
     const table = this.tables[tableName]
     if(id < 0 || id >= table.index){
       return Promise.resolve(`ERROR: no record at index ${id} in table ${tableName}`)

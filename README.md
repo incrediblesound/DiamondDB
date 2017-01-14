@@ -46,11 +46,11 @@ This query creates a new table called "people" that has a schema with a fifteen 
 This query saves the record contained in the "body" field of the post to the "people" table. It will return the ID of the saved record
 ```javascript
 {
-"operation":"LOAD",
+"operation":"FETCH",
   "data": {
 	"table": "people",
 	"id": 6
   }
 }
 ```
-This query loads and returns the record from the "people" table with the ID of 6.
+This query fetches and returns the record from the "people" table with the ID of 6.

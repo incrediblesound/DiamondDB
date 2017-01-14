@@ -26,9 +26,9 @@ export default class Database {
       return data
     })
   }
-  loadRecord(table, id){
+  fetchRecord(table, id){
     this.status = BUSY
-    return this.store.load(table, id).then(data => {
+    return this.store.fetch(table, id).then(data => {
       this.status = READY
       return data
     })

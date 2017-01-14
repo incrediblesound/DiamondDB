@@ -19,8 +19,8 @@ class Q {
             next.cb(id)
           })
           break
-          case 'LOAD':
-          this.db.loadRecord(data.table, data.id).then(record => {
+          case 'FETCH':
+          this.db.fetchRecord(data.table, data.id).then(record => {
             next.cb(record)
           })
           break
