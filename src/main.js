@@ -1,3 +1,3 @@
-import database from '../front/database'
+import database from './front/database'
 
 export const DB = database
