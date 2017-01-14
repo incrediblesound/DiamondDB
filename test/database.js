@@ -7,14 +7,14 @@ db.init().then(() => {
     age: ['number', 3]
   }
 
-  db.makeTable('person', schema)
-
-  db.saveRecord('person', {
-    name: 'John',
-    age: 25
-  }).then(id => {
-    db.loadRecord(id).then(record => {
-      console.log(record)
-    })
-  })
+  db.loadRecord('person', 1).then(record => { console.log(record)})
+  // db.makeTable('person', schema)
+  //
+  // db.saveRecord('person', {
+  //   name: 'John',
+  //   age: 25
+  // }).then(id => {
+  //     console.log(record)
+  //   })
+  // })
 })

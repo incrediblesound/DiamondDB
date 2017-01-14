@@ -1,19 +1,31 @@
 import fs from 'fs'
-import { openOrCreate, append, makeSchemaString, makeRecordString, schemaLength } from './utils/utils'
+import Promise from 'bluebird'
+import {
+  openOrCreate,
+  append,
+  makeSchemaString,
+  makeRecordString,
+  parseMeta,
+  parseRecord,
+  schemaLength } from './utils/utils'
 import { READ, APPEND, PAGE_SIZE } from './utils/constants'
+const open = Promise.promisify(fs.open)
+const read = Promise.promisify(fs.read)
+const readFile = Promise.promisify(fs.readFile)
 
 export default class Store {
   constructor() {
     this.tables = {}
     this.root = './data/'
     this.metaFilePath = `${this.root}meta.txt`
-    // this.loadTables()
   }
   init(){
     return openOrCreate(this.metaFilePath, READ).then(this.loadMeta.bind(this))
   }
   loadMeta(data) {
-    // TODO
+    return readFile(this.metaFilePath).then(data => {
+      this.tables = parseMeta(data.toString())
+    })
   }
   makeTable(name, schema) {
     const length = schemaLength(schema)
@@ -26,17 +38,27 @@ export default class Store {
     const index = ++table.index
     const pageIdx = Math.floor(index/PAGE_SIZE)
     const recordString = makeRecordString(table, record)
-    const fileName = `${this.root}/${tableName}.${pageIdx}.dat`
-    const isFirst = pageIdx % PAGE_SIZE
-    if(isFirst){
+    const fileName = `${this.root}${tableName}.${pageIdx}.dat`
+    const recordIdx = pageIdx % PAGE_SIZE
+    if(recordIdx === 1){  /* new page! */
       return openOrCreate(fileName).then(() => {
-        return append(`${this.root}${tableName}.${pageIdx}.dat`, recordString).then(writeMeta.bind(this))
+        return append(fileName, recordString).then(() => index)/*.then(writeMeta.bind(this))*/
       })
     } else {
-      return append(`${this.root}${tableName}.${pageIdx}.dat`, recordString).then(writeMeta.bind(this))
+      return append(fileName, recordString).then(() => index)/*.then(writeMeta.bind(this))*/
     }
   }
-  load(table, id){
-
+  load(tableName, id){
+    const table = this.tables[tableName]
+    const schemaLength = table.length
+    const pageIdx = Math.floor(id/PAGE_SIZE)
+    const recordIdx = pageIdx % PAGE_SIZE
+    const fileName = `${this.root}${tableName}.${pageIdx}.dat`
+    return readFile(fileName).then(result => {
+      const page = result.toString()
+      const position = recordIdx*schemaLength
+      const recordString = page.substring(position, position+schemaLength)
+      return parseRecord(recordString, table.schema)
+    })
   }
 }

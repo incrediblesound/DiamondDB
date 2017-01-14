@@ -30,6 +30,23 @@ export function schemaLength(schema){
   }, 0)
 }
 
+export function parseMeta(metaString){
+  const list = metaString.split('\n')
+  return list.reduce((acc, curr) => {
+    if(!curr || !curr.length) return acc
+
+    const [head, tail, len] = curr.split('__');
+    const props = tail.split('.')
+    const schema = props.reduce((acc2, curr2) => {
+      const [key, type, len] = curr2.split(';')
+      acc2[key] = [type, parseInt(len)]
+      return acc2
+    }, {})
+    acc[head] = { schema, length: parseInt(len) }
+    return acc
+  }, {})
+}
+
 export function makeSchemaString(name, schema){
   // 'person__name;string;15.age;number;3\n'
   const keys = Object.keys(schema)
@@ -60,5 +77,28 @@ export function makeRecordString(table, record){
     cursorPosition += (valueLength - currentPosition) // jump ahead to next space in record
     currentPosition = 0
   })
-  return `${temp.join('')}\n`
+  return temp.join('')
+}
+
+export function parseRecord(recordString, schema){
+  let counter = 0
+  return Object.keys(schema).reduce((acc, curr) => {
+    const len = schema[curr][1]
+    const value = recordString.substring(counter, counter+len)
+    if(schema[curr][0] === 'number'){
+      acc[curr] = parseInt(value)
+    } else {
+      acc[curr] = trimTail(value)
+    }
+    counter += len
+    return acc
+  }, {})
+}
+
+function trimTail(string){
+  if(string[string.length-1] === ' '){
+    return trimTail(string.substring(0, string.length-1))
+  } else {
+    return string
+  }
 }

@@ -11,7 +11,7 @@ export default class Database {
     this.store.makeTable(name, schema)
   }
   saveRecord(table, record){
-    this.store.save(table, record)
+    return this.store.save(table, record)
   }
   loadRecord(table, id){
     return this.store.load(table, id)
