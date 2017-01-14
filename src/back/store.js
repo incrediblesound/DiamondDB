@@ -61,7 +61,9 @@ export default class Store {
   }
   load(tableName, id){
     const table = this.tables[tableName]
-
+    if(id < 0 || id >= table.index){
+      return Promise.resolve(`ERROR: no record at index ${id} in table ${tableName}`)
+    }
     const schemaLength = table.size
     const pageIdx = Math.floor(id/PAGE_SIZE)
     const recordIdx = id % PAGE_SIZE
