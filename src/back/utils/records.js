@@ -40,6 +40,7 @@ export function parseRecord(recordString, schema){
 }
 
 function trimTail(string){
+  if(string[string.length-1] !== ' ') return string
   const arr = string.split('')
   while(arr.length && arr[arr.length-1] === ' '){
     arr.pop()
