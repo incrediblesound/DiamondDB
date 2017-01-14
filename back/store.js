@@ -20,9 +20,9 @@ export default class Store {
     this.metaFilePath = `${this.root}meta.txt`
   }
   init(){
-    return openOrCreate(this.metaFilePath, READ).then(this.loadMeta.bind(this))
+    return openOrCreate(this.metaFilePath, READ).then(this.loadMeta)
   }
-  loadMeta(data) {
+  loadMeta = (data) => {
     return readFile(this.metaFilePath).then(data => {
       this.tables = parseMeta(data.toString())
     })
@@ -30,22 +30,22 @@ export default class Store {
   makeTable(name, schema) {
     const length = schemaLength(schema)
     this.tables[name] = { length, schema, index: 0 } // TODO eww object reference
-    const schemaString = makeSchemaString(name, schema)
+    const schemaString = makeSchemaString(name, schema, length)
     append(this.metaFilePath, schemaString)
   }
   save(tableName, record) {
     const table = this.tables[tableName]
-    const index = ++table.index
+    const index = table.index++
     const pageIdx = Math.floor(index/PAGE_SIZE)
     const recordString = makeRecordString(table, record)
     const fileName = `${this.root}${tableName}.${pageIdx}.dat`
     const recordIdx = pageIdx % PAGE_SIZE
     if(recordIdx === 1){  /* new page! */
       return openOrCreate(fileName).then(() => {
-        return append(fileName, recordString).then(() => index)/*.then(writeMeta.bind(this))*/
+        return append(fileName, recordString).then(() => index)
       })
     } else {
-      return append(fileName, recordString).then(() => index)/*.then(writeMeta.bind(this))*/
+      return append(fileName, recordString).then(() => index)
     }
   }
   load(tableName, id){

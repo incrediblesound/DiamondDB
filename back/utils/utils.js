@@ -47,14 +47,14 @@ export function parseMeta(metaString){
   }, {})
 }
 
-export function makeSchemaString(name, schema){
+export function makeSchemaString(name, schema, length){
   // 'person__name;string;15.age;number;3\n'
   const keys = Object.keys(schema)
   const pieces = keys.map(key => {
     const data = schema[key]
     return `${key};${data[0]};${data[1]}`
   })
-  return `${name}__${pieces.join('.')}\n`
+  return `${name}__${pieces.join('.')}__${length}\n`
 }
 
 export function makeRecordString(table, record){
