@@ -26,23 +26,23 @@ export function makeRecordString(table, record){
 
 export function parseRecord(recordString, schema){
   let counter = 0
-  return Object.keys(schema).reduce((acc, curr) => {
-    const len = schema[curr][1]
+  return Object.keys(schema).reduce((record, property) => {
+    const len = schema[property][1]
     const value = recordString.substring(counter, counter+len)
-    if(schema[curr][0] === 'number'){
-      acc[curr] = parseInt(value)
+    if(schema[property][0] === 'number'){
+      record[property] = parseInt(value)
     } else {
-      acc[curr] = trimTail(value)
+      record[property] = trimTail(value)
     }
     counter += len
-    return acc
+    return record
   }, {})
 }
 
 function trimTail(string){
-  if(string[string.length-1] === ' '){
-    return trimTail(string.substring(0, string.length-1))
-  } else {
-    return string
+  const arr = string.split('')
+  while(arr.length && arr[arr.length-1] === ' '){
+    arr.pop()
   }
+  return arr.join('')
 }
