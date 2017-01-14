@@ -44,8 +44,12 @@ export default class Store {
   }
   save(tableName, record) {
     const table = this.tables[tableName]
-    const recordString = makeRecordString(table, record)
-
+    let recordString
+    try {
+      recordString = makeRecordString(table, record)
+    } catch(e){
+      return Promise.resolve(e.toString())
+    }
     const id = table.index++
     const pageIdx = Math.floor(id/PAGE_SIZE)
     const recordIdx = id % PAGE_SIZE
