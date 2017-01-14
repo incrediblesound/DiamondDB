@@ -16,13 +16,13 @@ to build the package. Then you can run
 ```shell
 node server
 ```
-and you will see some nice messages telling you that there is a server listening for requests and a queue waiting for jobs. Next you can POST some data to 'localhost:2020' to interact with the database. Here are some examples:
+and you will see some nice messages telling you that there is a server listening for requests and a queue waiting for jobs. Next you can POST some data to `localhost:2020` to interact with the database. Here are some examples:
 
 ```javascript
 {
 "operation":"TABLE_CREATE",
   "data": {
-	  "name": "people",
+    "name": "people",
     "schema": {
       "name": ["string", 15],
       "age": ["number", 3]
