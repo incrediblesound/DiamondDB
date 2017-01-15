@@ -8,7 +8,7 @@ DiamondDB uses schemas that specify the character length of each field in a reco
 
 How to Use
 ----------
-DiamondDB is written is futuristic JavaScript so you'll need to run
+DiamondDB is written in futuristic JavaScript so you'll need to run
 `npm install`
 and
 `webpack`
