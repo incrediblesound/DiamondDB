@@ -16,8 +16,9 @@ to build the package. Then you can run `mkdir data` to make the folder for stori
 ```shell
 node server
 ```
-which will give you some nice messages telling you that there is a server listening for requests and a queue waiting for jobs. Next you can POST some JSON to `localhost:2020` to interact with the database. Here are some examples:
+which will give you some nice messages telling you that there is a server listening for requests and a queue waiting for jobs. Next you can POST some JSON to `localhost:2020` to interact with the database. Here are some examples.
 
+This query creates a new table called "people" that has a schema with a fifteen character long name field and a three character long age field. If it succeeds, you'll get a `1` back. The number one means "I did it!" in computer speak:
 ```javascript
 {
 "operation":"TABLE_CREATE",
@@ -30,7 +31,8 @@ which will give you some nice messages telling you that there is a server listen
   }
 }
 ```
-This query creates a new table called "people" that has a schema with a fifteen character long name field and a three character long age field. If it succeeds, you'll get a `1` back. The number one means "I did it!" in computer speak.
+
+This query saves the record contained in the "body" field of the post to the "people" table. It will return the ID of the saved record:
 ```javascript
 {
 "operation":"SAVE",
@@ -43,7 +45,8 @@ This query creates a new table called "people" that has a schema with a fifteen 
   }
 }
 ```
-This query saves the record contained in the "body" field of the post to the "people" table. It will return the ID of the saved record
+
+This query fetches and returns the record from the "people" table with the ID of 6:
 ```javascript
 {
 "operation":"FETCH",
@@ -53,7 +56,6 @@ This query saves the record contained in the "body" field of the post to the "pe
   }
 }
 ```
-This query fetches and returns the record from the "people" table with the ID of 6.
 
 Contributing
 ------------
