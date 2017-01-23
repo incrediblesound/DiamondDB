@@ -15,19 +15,34 @@ class Q {
         const data = next.job.data
         switch(operation){
           case 'SAVE':
-          this.db.saveRecord(data.table, data.body).then(id => {
-            next.cb(id)
-          })
+          console.log('Saving record...')
+          this.db.saveRecord(data.table, data.body)
+            .then(id => {
+              next.cb(id)
+            })
+            .catch(error => {
+              next.cb(error)
+            })
           break
           case 'FETCH':
-          this.db.fetchRecord(data.table, data.id).then(record => {
-            next.cb(record)
-          })
+          console.log('Fetching record...')
+          this.db.fetchRecord(data.table, data.id)
+            .then(record => {
+              next.cb(record)
+            })
+            .catch(error => {
+              next.cb(error)
+            })
           break
           case 'TABLE_CREATE':
-          this.db.makeTable(data.name, data.schema).then(result => {
-            next.cb(result)
-          })
+          console.log('Creating table...')
+          this.db.makeTable(data.name, data.schema)
+            .then(result => {
+              next.cb(result)
+            })
+            .catch(error => {
+              next.cb(error)
+            })
         }
       }
     }, 0)

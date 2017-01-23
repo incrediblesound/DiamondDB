@@ -5,14 +5,8 @@ export function makeRecordString(table, record){
   var cursorPosition = 0
   var currentPosition = 0
   Object.keys(record).forEach(key => {
-    if(!table.schema[key]){
-      throw new Error(`No key "${key}" in schema.`)
-    }
-    const valueLength = table.schema[key][1]
-    const value = `${record[key]}` // store value as string
-    if(value.length > valueLength){
-      throw new Error(`Value "${value}" too long for property "${key}".`)
-    }
+    let value = record[key]
+    let valueLength = table.schema[key][1]
     for(let i = 0, l = value.length; i<l; i++){
       temp[cursorPosition] = value[i]
       cursorPosition++
