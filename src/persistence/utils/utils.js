@@ -1,6 +1,7 @@
 import fs from 'fs'
 import Promise from 'bluebird'
 import { READ, APPEND } from './constants'
+import { failure } from '../../common/operations'
 
 const openFile = Promise.promisify(fs.open)
 const writeFile = Promise.promisify(fs.writeFile)
@@ -15,7 +16,7 @@ export function create(path, contents=''){
 }
 
 function bail(err){
-  throw new Error(err)
+  return failure(err)
 }
 
 export function append(path, data){

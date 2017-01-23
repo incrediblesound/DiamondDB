@@ -69,3 +69,11 @@ export const success = (data) => {
     data
   }
 }
+
+export const FAILURE = 'FAILURE'
+export const failure = (data) => {
+  return {
+    operation: FAILURE,
+    data
+  }
+}

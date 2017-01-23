@@ -6,7 +6,8 @@ import {
   fetchRecord,
   storeRecord,
   updateMeta,
-  writeToDisk
+  writeToDisk,
+  failure
  } from '../common/operations'
 import { validate, schemaLength } from './utils/schema'
 
@@ -26,7 +27,7 @@ export default class Database {
     })
     .catch(() => {
       this.status = READY
-      return 'new database initialized'
+      return failure()
     })
   }
   start({ persist }){
@@ -35,7 +36,7 @@ export default class Database {
         this.writeToDisk()
       }, persist )
     }
-    return 1
+    return success()
   }
   isReady(){
     return this.status === READY

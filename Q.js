@@ -16,7 +16,7 @@ class Q {
         switch(operation){
           case 'SAVE':
           console.log('Saving record...')
-          this.db.saveRecord(data.table, data.body)
+          this.db.saveRecord(data.table, data.record)
             .then(id => {
               next.cb(id)
             })

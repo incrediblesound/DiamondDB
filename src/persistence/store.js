@@ -9,7 +9,10 @@ import {
   MAKE_TABLE,
   UPDATE_META,
   FETCH_RECORD,
-  STORE_RECORD, success } from '../common/operations'
+  STORE_RECORD,
+  success,
+  failure
+ } from '../common/operations'
 import { READ, APPEND, PAGE_SIZE } from './utils/constants'
 
 const open = Promise.promisify(fs.open)
@@ -25,10 +28,12 @@ export default class Store {
   }
   init(){
     return openOrCreate(this.metaFilePath, READ)
-      .then(this.loadMeta)
+      .then(this._loadMeta)
       .then((tables) => success(tables))
   }
-  loadMeta = (data) => {
+  /* called by init() */
+  _loadMeta = (data) => {
+
     return readFile(this.metaFilePath).then(data => {
       const tableData = data.toString()
       if(tableData.length){
@@ -36,28 +41,35 @@ export default class Store {
       }
     })
   }
+  _clearOperations() {
+    const operations = this.operations.slice()
+    this.operations = []
+    return operations
+  }
   updateMeta = () => {
     const tables = this.latestMetaUpdate && this.latestMetaUpdate.tables
+    console.log(tables)
     if(tables){
       let meta = ''
       Object.keys(tables).forEach(tableName => {
         meta += makeSchemaString(tables[tableName])
       })
-      return create(this.metaFilePath, meta)
+      return create(this.metaFilePath, meta).then(success)
     } else {
-      return Promise.resolve()
+      return Promise.resolve(success())
     }
   }
   makeTable({ tableData }) {
     if(!tableData){
-      return Promise.reject('Create table message did not contain new table')
+      return Promise.reject(failure('Create table message did not contain new table'))
     }
     const schemaString = makeSchemaString(tableData)
     return append(this.metaFilePath, schemaString).then(() => {
-      return 1
+      return success()
     })
   }
-  save(fileName, records) {
+  /* called by persist */
+  _save(fileName, records) {
     return openOrCreate(fileName).then(() => {
       return append(fileName, records)
     })
@@ -68,16 +80,21 @@ export default class Store {
     const pageIdx = Math.floor(id/PAGE_SIZE)
     const recordIdx = id % PAGE_SIZE
     const fileName = `${this.root}${tableName}.${pageIdx}.dat`
-    return readFile(fileName).then(result => {
-      const page = result.toString()
-      const position = recordIdx * schemaLength
-      const recordString = page.substring(position, position+schemaLength)
-      const record = parseRecord(recordString, table.schema)
-      return success(record)
-    })
+    return readFile(fileName)
+      .then(result => {
+        const page = result.toString()
+        const position = recordIdx * schemaLength
+        const recordString = page.substring(position, position+schemaLength)
+        const record = parseRecord(recordString, table.schema)
+        return success(record)
+      })
+      .catch(e => {
+        return failure(e)
+      })
 
   }
   persist(){
+    const operations = this._clearOperations()
     const storeOperations = this.operations.filter(op => op.operation === STORE_RECORD)
     const fileMap = storeOperations.reduce((map, op) => {
       const { table, record, id } = op.data
@@ -90,9 +107,11 @@ export default class Store {
     }, {})
     const promises = Object.keys(fileMap).map(fileName => {
       const recordString = fileMap[fileName].join('')
-      return this.save(fileName, recordString)
+      return this._save(fileName, recordString)
     })
-    return this.updateMeta().then(() => Promise.all(promises))
+    return this.updateMeta()
+      .then(() => Promise.all(promises))
+      .then(success)
   }
   message(message){
     switch(message.operation){
