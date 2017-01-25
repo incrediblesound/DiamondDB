@@ -1,3 +1,6 @@
+const constants = require('./constants')
+const { PAGE_SIZE } = constants
+
 const makeRecordString = (table, record) => {
   const temp = []
   temp.length = table.size
@@ -33,6 +36,18 @@ const parseRecord = (recordString, schema) => {
   }, {})
 }
 
+const makeFileMap = (operations, rootPath) => {
+  return operations.reduce((map, op) => {
+    const { table, record, id } = op.data
+    const pageIdx = Math.floor(id/PAGE_SIZE)
+    const fileName = `${rootPath}${table.name}.${pageIdx}.dat`
+    const recordString = makeRecordString(table, record)
+    map[fileName] = map[fileName] || []
+    map[fileName][id] = recordString
+    return map
+  }, {})
+}
+
 function trimTail(string){
   if(string[string.length-1] !== ' ') return string
   const arr = string.split('')
@@ -44,5 +59,6 @@ function trimTail(string){
 
 module.exports = {
   parseRecord,
-  makeRecordString
+  makeRecordString,
+  makeFileMap
 }

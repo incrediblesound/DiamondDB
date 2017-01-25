@@ -96,15 +96,7 @@ module.exports = class Store {
   persist(){
     const operations = this._clearOperations()
     const storeOperations = operations.filter(msg => msg.operation === STORE_RECORD)
-    const fileMap = storeOperations.reduce((map, op) => {
-      const { table, record, id } = op.data
-      const pageIdx = Math.floor(id/PAGE_SIZE)
-      const fileName = `${this.root}${table.name}.${pageIdx}.dat`
-      const recordString = recordUtils.makeRecordString(table, record)
-      map[fileName] = map[fileName] || []
-      map[fileName][id] = recordString
-      return map
-    }, {})
+    const fileMap = recordUtils.makeFileMap(storeOperations, this.root)
     const promises = Object.keys(fileMap).map(fileName => {
       const recordString = fileMap[fileName].join('')
       return this._save(fileName, recordString)
