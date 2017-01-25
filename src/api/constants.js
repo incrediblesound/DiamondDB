@@ -1,3 +1,7 @@
-export const READY = 'READY'
-export const BUSY = 'BUSY'
-export const INIT = 'INIT'
+module.exports = {
+  READY:'READY',
+  BUSY:'BUSY',
+  INIT:'INIT',
+  MINUTES:'minutes',
+  SECONDS:'seconds'
+}

@@ -1,4 +1,3 @@
-const DB = require('./dist/diamond').DB
 const Q = require('./Q')
 const http = require('http')
 
@@ -11,38 +10,40 @@ const headers = {
 const port = process.env.PORT || 2020
 const ip = '127.0.0.1'
 
-const db = new DB()
-const q = new Q(db)
+module.exports = function(db){
+  const q = new Q(db)
 
-console.log('DiamondDB initializing...')
-db.init().then(() => {
-  console.log('Initialized, starting server...')
-  const server = http.createServer(requestHandler);
-  server.listen(port, ip);
-  console.log('Server started...')
-  q.start()
-})
-
-
-function requestHandler(req, res){
-  res.writeHead(200, headers);
-  retrieveData(req, function(data){
-    if(req.url === '/query'){
-      q.register(data, (result) => {
-        res.end(JSON.stringify(result))
-      })
-    } else {
-      req.end()
-    }
+  console.log('DiamondDB initializing...')
+  db.init().then(() => {
+    console.log('Initialized, starting server...')
+    const server = http.createServer(requestHandler);
+    server.listen(port, ip);
+    console.log('Server started...')
+    q.start()
   })
-}
 
-function retrieveData(request, cb){
-  let result = ''
-  request.on('data', (chunk) => {
-        result += chunk.toString();
+
+  function requestHandler(req, res){
+    console.log('request...')
+    res.writeHead(200, headers);
+    retrieveData(req, function(data){
+      if(req.url === '/query'){
+        q.register(data, (result) => {
+          res.end(JSON.stringify(result))
+        })
+      } else {
+        req.end()
+      }
+    })
+  }
+
+  function retrieveData(request, cb){
+    let result = ''
+    request.on('data', (chunk) => {
+      result += chunk.toString();
     });
-  request.on('end', () => {
-    cb(JSON.parse(result));
-  })
+    request.on('end', () => {
+      cb(JSON.parse(result));
+    })
+  }
 }

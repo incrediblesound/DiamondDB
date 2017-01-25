@@ -1,3 +1,10 @@
-import database from './front/database'
+const Database = require('./api/database')
+const Store = require('./persistence/store')
+const Cache = require('./cache/cache')
 
-export const DB = database
+
+module.exports = {
+  Database,
+  Store,
+  Cache
+}

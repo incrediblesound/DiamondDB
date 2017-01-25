@@ -1,18 +1,12 @@
-export function makeRecordString(table, record){
+const makeRecordString = (table, record) => {
   const temp = []
   temp.length = table.size
   temp.fill(' ')
   var cursorPosition = 0
   var currentPosition = 0
   Object.keys(record).forEach(key => {
-    if(!table.schema[key]){
-      throw new Error(`No key "${key}" in schema.`)
-    }
-    const valueLength = table.schema[key][1]
-    const value = `${record[key]}` // store value as string
-    if(value.length > valueLength){
-      throw new Error(`Value "${value}" too long for property "${key}".`)
-    }
+    let value = record[key].toString()
+    let valueLength = table.schema[key][1]
     for(let i = 0, l = value.length; i<l; i++){
       temp[cursorPosition] = value[i]
       cursorPosition++
@@ -24,7 +18,7 @@ export function makeRecordString(table, record){
   return temp.join('')
 }
 
-export function parseRecord(recordString, schema){
+const parseRecord = (recordString, schema) => {
   let counter = 0
   return Object.keys(schema).reduce((record, property) => {
     const len = schema[property][1]
@@ -46,4 +40,9 @@ function trimTail(string){
     arr.pop()
   }
   return arr.join('')
+}
+
+module.exports = {
+  parseRecord,
+  makeRecordString
 }
