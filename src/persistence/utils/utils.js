@@ -1,24 +1,33 @@
-import fs from 'fs'
-import Promise from 'bluebird'
-import { READ, APPEND } from './constants'
-import { failure } from '../../common/operations'
+const fs = require('fs')
+const Promise = require('bluebird')
+const constants = require('./constants')
+const operations = require('../../common/operations')
+
+const { READ, APPEND } = constants
+const { failure } = operations
 
 const openFile = Promise.promisify(fs.open)
 const writeFile = Promise.promisify(fs.writeFile)
 const appendFile = Promise.promisify(fs.appendFile)
 
-export function openOrCreate(path, mode){
-  return openFile(path, mode).catch((err) => create(path).catch(bail))
+function openOrCreate(path, mode){
+  return openFile(path, mode).catch((err) => create(path).catch(_bail))
 }
 
-export function create(path, contents=''){
-  return writeFile(path, contents).catch(bail)
+function create(path, contents=''){
+  return writeFile(path, contents).catch(_bail)
 }
 
-function bail(err){
+function _bail(err){
   return failure(err)
 }
 
-export function append(path, data){
-  return appendFile(path, data).catch(bail)
+function append(path, data){
+  return appendFile(path, data).catch(_bail)
+}
+
+module.exports = {
+  create,
+  openOrCreate,
+  append
 }

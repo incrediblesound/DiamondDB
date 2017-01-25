@@ -1,3 +1,5 @@
-export const READ = 'r'
-export const APPEND = 'a'
-export const PAGE_SIZE = 100
+module.exports = {
+  READ: 'r',
+  APPEND: 'a',
+  PAGE_SIZE: 100
+}

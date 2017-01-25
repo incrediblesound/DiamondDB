@@ -1,6 +1,6 @@
-import Promise from 'bluebird'
+const Promise = require('bluebird')
 
-export const validate = (schema, record) => {
+const validate = (schema, record) => {
   var keys = Object.keys(record)
   for(let i = 0; i < keys.length; i++){
     let key = keys[i]
@@ -16,7 +16,7 @@ export const validate = (schema, record) => {
   return Promise.resolve()
 }
 
-export function schemaLength(schema){
+const schemaLength = (schema) => {
   const keys = Object.keys(schema)
   return keys.reduce((acc, curr) => {
     const len = schema[curr][1]
@@ -24,4 +24,8 @@ export function schemaLength(schema){
   }, 0)
 }
 
+module.exports = {
+  validate,
+  schemaLength
+}
 // 901946499 //

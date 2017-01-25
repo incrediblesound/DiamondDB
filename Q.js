@@ -15,7 +15,6 @@ class Q {
         const data = next.job.data
         switch(operation){
           case 'SAVE':
-          console.log('Saving record...')
           this.db.saveRecord(data.table, data.record)
             .then(id => {
               next.cb(id)
@@ -25,7 +24,6 @@ class Q {
             })
           break
           case 'FETCH':
-          console.log('Fetching record...')
           this.db.fetchRecord(data.table, data.id)
             .then(record => {
               next.cb(record)
@@ -35,7 +33,6 @@ class Q {
             })
           break
           case 'TABLE_CREATE':
-          console.log('Creating table...')
           this.db.makeTable(data.name, data.schema)
             .then(result => {
               next.cb(result)

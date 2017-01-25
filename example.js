@@ -1,4 +1,4 @@
-const diamond = require('./dist/diamond')
+const diamond = require('./src/main')
 const server = require('./server')
 
 
@@ -9,9 +9,9 @@ const server = require('./server')
  */
 
 const store = new diamond.Store()
-const cache = new diamond.Cache()
+const cache = new diamond.Cache({ size: 8 })
 
-const db = new diamond.DB({
+const db = new diamond.Database({
   store,
   cache
 })

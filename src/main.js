@@ -1,8 +1,10 @@
-import database from './api/database'
-import store from './persistence/store'
-import cache from './cache/cache'
+const Database = require('./api/database')
+const Store = require('./persistence/store')
+const Cache = require('./cache/cache')
 
 
-export const DB = database
-export const Store = store
-export const Cache = cache
+module.exports = {
+  Database,
+  Store,
+  Cache
+}

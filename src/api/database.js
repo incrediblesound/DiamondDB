@@ -1,17 +1,22 @@
-import Store from '../persistence/store'
-import { BUSY, READY, INIT } from './constants'
-import {
-  makeTable,
-  initialize,
+const Store = require('../persistence/store')
+const constants = require('./constants')
+const ops = require('../common/operations')
+const schemaUtils = require('./utils/schema')
+
+const { validate, schemaLength } = schemaUtils
+const { INIT, BUSY, READY } = constants
+const {
+  success,
+  failure,
   fetchRecord,
   storeRecord,
-  updateMeta,
+  makeTable,
   writeToDisk,
-  failure
- } from '../common/operations'
-import { validate, schemaLength } from './utils/schema'
+  initialize,
+  updateMeta
+} = ops
 
-export default class Database {
+module.exports = class Database {
   constructor(options){
     this.persist = options.store
     this.cache = options.cache
@@ -25,9 +30,9 @@ export default class Database {
       this.status = READY
       return this.start(options)
     })
-    .catch(() => {
+    .catch((e) => {
       this.status = READY
-      return failure()
+      return failure(e)
     })
   }
   start({ persist }){
@@ -64,34 +69,28 @@ export default class Database {
     return validate(table.schema, record)
       .then(() => {
         const id = table.index++
-        return this.cache.message(storeRecord(table, record, id)).then(() => {
-          this.persist.message(storeRecord(table, record, id))
+        return this.cache.message(storeRecord(table, record, id))
           .then(() => {
-            return Object.assign({ _id: id }, record)
-          })
-          .catch(() => 0)
-        })
-      })
-      .catch(e => {
-        return Promise.reject(e)
-      })
-
+            this.persist.message(storeRecord(table, record, id))
+              .then(success(Object.assign({ _id: id }, record)))
+              .catch(failure)
+          }).catch(failure)
+      }).catch(failure)
   }
   fetchRecord(tableName, id){
     const table = this.tables[tableName]
     if(id < 0 || id >= table.index){
-      return Promise.reject(`ERROR: no record at index ${id} in table ${tableName}`)
+      return Promise.reject(failure(`ERROR: no record at index ${id} in table ${tableName}`))
     }
     return this.cache.message(fetchRecord(table, id)).then((response) => {
-      if(response.operation === 'SUCCESS'){
-        return response.data
+      if(response.operation === 'SUCCESS' && response.data){
+        return response
       } else {
-        return this.persist.message(fetchRecord(table, id)).then((response) => {
-          if(response.operation === 'SUCCESS'){
-            return response.data
-          } else {
-            return null
+        return this.persist.message(fetchRecord(table, id)).then(response => {
+          if(response.operation === 'SUCCESS' && response.data){
+            this.cache.message(storeRecord(table, response.data, id))
           }
+          return response
         })
       }
     })
