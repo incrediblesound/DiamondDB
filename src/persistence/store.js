@@ -112,7 +112,7 @@ module.exports = class Store {
     if(promises.length){
       return this.updateMeta()
       .then(() => Promise.all(promises))
-      .then(success)
+      .then(() => success())
     } else {
       return success()
     }

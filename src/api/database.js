@@ -69,13 +69,11 @@ module.exports = class Database {
     return validate(table.schema, record)
       .then(() => {
         const id = table.index++
-        return this.cache.message(storeRecord(table, record, id))
-          .then(() => {
-            this.persist.message(storeRecord(table, record, id))
-              .then(success(Object.assign({ _id: id }, record)))
-              .catch(failure)
-          }).catch(failure)
-      }).catch(failure)
+        this.cache.message(storeRecord(table, record, id))
+        return this.persist.message(storeRecord(table, record, id))
+            .then(() => success(Object.assign({ _id: id }, record)))
+            .catch((e) => failure(e))
+        }).catch((e) => failure(e))
   }
   fetchRecord(tableName, id){
     const table = this.tables[tableName]
