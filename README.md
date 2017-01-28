@@ -30,6 +30,7 @@ DiamondDB takes advantage of features in the most current version of Node. The m
 Before starting the database run `mkdir data` to make the folder for storing records. Here is an example of how to configure DiamondDB:
 ```javascript
 const diamond = require('./src/main')
+const server = require('./server')
 
 /* use the included store module */
 const store = new diamond.Store()
@@ -47,8 +48,11 @@ const db = new diamond.Database({
 db.init({
   persist: 5000
 })
+
+/* use server (included with repo) to send requests to the database */
+server(db)
 ```
-There is also a server included that accepts the following POST requests for testing purposes. Here are some example queries for using that server:
+The server included with this repo accepts the following POST requests for testing purposes. Here are some example queries for using that server:
 
 This query creates a new table called "people" that has a schema with a fifteen character long name field and a three character long age field. If it succeeds, you'll get a `1` back. The number one means "I did it!" in computer speak:
 ```javascript
