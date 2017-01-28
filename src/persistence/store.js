@@ -1,5 +1,4 @@
 const fs = require('fs')
-const Promise = require('bluebird')
 const diskUtils = require('./utils/utils')
 const recordUtils = require('./utils/records')
 const schemaUtils = require('./utils/schema')
@@ -17,7 +16,7 @@ const {
 } = operations
 const { READ, APPEND, PAGE_SIZE } = constants
 
-const readFile = Promise.promisify(fs.readFile)
+const readFile = diskUtils.promisify(fs.readFile)
 
 module.exports = class Store {
   constructor() {
@@ -33,7 +32,6 @@ module.exports = class Store {
   }
   /* called by init() */
   _loadMeta(data) {
-
     return readFile(this.metaFilePath).then(data => {
       const tableData = data.toString()
       if(tableData.length){
@@ -69,7 +67,7 @@ module.exports = class Store {
   }
   /* called by persist */
   _save(fileName, records) {
-    return diskUtils.openOrCreate(fileName, 'a').then(() => {
+    return diskUtils.openOrCreate(fileName, APPEND).then(() => {
       return diskUtils.append(fileName, records)
     })
   }

@@ -1,3 +1,4 @@
+const webpack = require('webpack')
 
 const config = {
   entry: {
@@ -9,6 +10,9 @@ const config = {
     libraryTarget: 'umd',
     umdNamedDefine: true
   },
+  plugins: [
+    new webpack.optimize.UglifyJsPlugin()
+  ],
   module: {
     loaders: [
       { test: /\.js?$/,

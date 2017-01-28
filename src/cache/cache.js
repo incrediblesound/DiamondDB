@@ -3,8 +3,6 @@ const operations = require('../common/operations')
 const {
   FETCH_RECORD,
   STORE_RECORD,
-  fetchRecord,
-  storeRecord,
   success
 } = operations
 
