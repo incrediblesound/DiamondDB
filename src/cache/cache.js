@@ -1,4 +1,3 @@
-const Promise = require('bluebird')
 const PLRUCache = require('./PLRUCache')
 const operations = require('../common/operations')
 const {

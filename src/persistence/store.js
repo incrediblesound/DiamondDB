@@ -17,8 +17,6 @@ const {
 } = operations
 const { READ, APPEND, PAGE_SIZE } = constants
 
-const open = Promise.promisify(fs.open)
-const read = Promise.promisify(fs.read)
 const readFile = Promise.promisify(fs.readFile)
 
 module.exports = class Store {

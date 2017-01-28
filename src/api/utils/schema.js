@@ -1,5 +1,3 @@
-const Promise = require('bluebird')
-
 const validate = (schema, record) => {
   var keys = Object.keys(record)
   for(let i = 0; i < keys.length; i++){

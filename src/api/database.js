@@ -2,6 +2,7 @@ const Store = require('../persistence/store')
 const constants = require('./constants')
 const ops = require('../common/operations')
 const schemaUtils = require('./utils/schema')
+const DummyCache = require('../cache/dummyCache')
 
 const { validate, schemaLength } = schemaUtils
 const { INIT, BUSY, READY } = constants
@@ -19,7 +20,7 @@ const {
 module.exports = class Database {
   constructor(options){
     this.persist = options.store
-    this.cache = options.cache
+    this.cache = options.cache ? options.cache : new DummyCache()
     this.tables = {}
     this.status = INIT
   }

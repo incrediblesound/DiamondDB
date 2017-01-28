@@ -1,7 +1,7 @@
 const fs = require('fs')
-const Promise = require('bluebird')
 const constants = require('./constants')
 const operations = require('../../common/operations')
+const Promise = require('bluebird')
 
 const { READ, APPEND } = constants
 const { failure } = operations
