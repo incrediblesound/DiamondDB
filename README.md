@@ -25,7 +25,7 @@ The persistence module included with DiamondDB is a simple Node.js implementatio
 
 How to Use
 ----------
-DiamondDB takes advantage of features in the most current version of Node. The main interface is `src/main.js` and requires one package (bluebird) so you'll have to run `npm install`. If you are using an earlier version of Node, you can run `webpack` to build the package for earlier versions, which will then be located in `dist/diamond.js`.
+DiamondDB takes advantage of features in the most current version of Node. The main interface is `src/main.js` but if you are using an earlier version of Node or want to use the minified version, you can run `npm install` and `webpack` to build the package which will be located in `dist/diamond.js`.
 
 Before starting the database run `mkdir data` to make the folder for storing records. Here is an example of how to configure DiamondDB:
 ```javascript
@@ -41,10 +41,11 @@ const cache = new diamond.Cache({ size: 8 }) // size must be a power of 2
 /* create a database instance with our cache and store modules */
 const db = new diamond.Database({
   store,
-  cache
+  cache /* this is optional */
 })
 
 /* initialize the db and configure it to write to disk every five seconds */
+/* set persist to false to turn off intermittent batch persistence */
 db.init({
   persist: 5000
 })
@@ -120,14 +121,14 @@ class Store {
   message(message){
     switch(message.operation){
       case UPDATE_META:
-	/* the database sends the tables meta-data to the store to be persisted
-	 * since all tables are sent with the message, it might be wise to only store
-	 * the most recent payload and persist on some interval
-	 * this message does not expect a response
-	 */
+	  /* the database sends the tables meta-data to the store to be persisted
+	   * since all tables are sent with the message, it might be wise to only store
+	   * the most recent payload and persist on some interval
+	   * this message does not expect a response
+	   */
         return Promise.resolve()
       case STORE_RECORD:
-	/* this message should either persist a record or store it for later batch persistence */
+	    /* this message should either persist a record or store it for later batch persistence */
         return Promise.resolve()
       case FETCH_RECORD:
         /* this message is sent if a record is not in the cache, it should fetch from the disk */
@@ -138,13 +139,13 @@ class Store {
       case INITIALIZE_PERSISTANCE:
         /* a store should be able to fetch the tables meta-data */
         const tables = this.initialize()
-	/* tables should be returned in a success message */
+	    /* tables should be returned in a success message */
         return Promise.resolve(success(tables))
       case PERSIST_ALL:
         /* this is message is sent on intervals if intermittent batch-persistence is configured */
-	const result = this.persist()
-	/* the result should be either a success or failure message */
-	return Promise.resolve(result)
+	    const result = this.persist()
+	    /* the result should be either a success or failure message */
+	    return Promise.resolve(result)
     }
   }
 }
