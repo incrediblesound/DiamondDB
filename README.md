@@ -103,14 +103,14 @@ class Cache {
     switch(message.operation){
       case STORE_RECORD:
         /* the cache should have a method for storing data */
-	this.storeRecord(message.data)
-	/* the STORE_RECORD message simply expects an empty success message */
-	return Promise.resolve(success())
+	    this.storeRecord(message.data)
+	    /* the STORE_RECORD message simply expects an empty success message */
+	    return Promise.resolve(success())
       case FETCH_RECORD:
         /* the cache should have a method for fetching data */
-	const result = this.fetchRecord(message.data)
-	/* it should return a success message with the result, even if the result is null */
-	return Promise.resolve(success(result))
+	    const result = this.fetchRecord(message.data)
+	    /* it should return a success message with the result, even if the result is null */
+	    return Promise.resolve(success(result))
     }
   }
 }
