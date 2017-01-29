@@ -1,5 +1,5 @@
 const operations = require('../common/operations')
-module.export = class DummyCache {
+module.exports = class DummyCache {
   message(){
     return Promise.resolve(operations.success(null))
   }

@@ -19,8 +19,8 @@ const { READ, APPEND, PAGE_SIZE } = constants
 const readFile = diskUtils.promisify(fs.readFile)
 
 module.exports = class Store {
-  constructor() {
-    this.root = './data/'
+  constructor(location) {
+    this.root = location || './data/'
     this.metaFilePath = `${this.root}meta.txt`
     this.operations = []
     this.latestMetaUpdate = null
@@ -49,18 +49,18 @@ module.exports = class Store {
     if(tables){
       let meta = ''
       Object.keys(tables).forEach(tableName => {
-        meta += schemaUtils.makeSchemaString(tables[tableName])
+        meta += schemaUtils.makeTableString(tables[tableName])
       })
-      return diskUtils.create(this.metaFilePath, meta).then(success)
+      return diskUtils.create(this.metaFilePath, meta)
     } else {
-      return Promise.resolve(success())
+      return Promise.resolve()
     }
   }
   makeTable({ tableData }) {
     if(!tableData){
       return Promise.reject(failure('Create table message did not contain new table'))
     }
-    const schemaString = schemaUtils.makeSchemaString(tableData)
+    const schemaString = schemaUtils.makeTableString(tableData)
     return diskUtils.append(this.metaFilePath, schemaString).then(() => {
       return success()
     })
@@ -84,9 +84,7 @@ module.exports = class Store {
         const record = recordUtils.parseRecord(recordString, table.schema)
         return success(record)
       })
-      .catch(e => {
-        return failure(e)
-      })
+      .catch(e => failure(e))
 
   }
   persist(){
@@ -101,6 +99,7 @@ module.exports = class Store {
       return this.updateMeta()
       .then(() => Promise.all(promises))
       .then(() => success())
+      .catch(e => failure(e))
     } else {
       return success()
     }

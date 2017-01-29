@@ -16,7 +16,7 @@ const parseMeta = (metaString) => {
   }, {})
 }
 
-const makeSchemaString = (table) => {
+const makeTableString = (table) => {
   // 'person__name;string;15.age;number;3\n'
   const schema = table.schema
   const keys = Object.keys(schema)
@@ -29,5 +29,5 @@ const makeSchemaString = (table) => {
 
 module.exports = {
   parseMeta,
-  makeSchemaString
+  makeTableString
 }

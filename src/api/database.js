@@ -29,20 +29,21 @@ module.exports = class Database {
     .then((success) => {
       this.tables = success.data || {}  /* success message holds payload on data */
       this.status = READY
-      return this.start(options)
+      this.start(options)
     })
     .catch((e) => {
+      console.log('Initialize error: ', e)
       this.status = READY
-      return failure(e)
+      this.start(options)
     })
   }
   start({ persist }){
+    /* TODO fragile */
     if(persist !== false){
       setInterval(() => {
         this.writeToDisk()
       }, persist )
     }
-    return success()
   }
   isReady(){
     return this.status === READY
@@ -58,11 +59,11 @@ module.exports = class Database {
     return this.persist.message(makeTable(newTable))
       .then(() => {
         this.status = READY
-        return 1
+        return success()
       })
-      .catch(() => {
+      .catch((e) => {
         this.status = READY
-        return 0
+        return failure(e)
       })
   }
   saveRecord(tableName, record){

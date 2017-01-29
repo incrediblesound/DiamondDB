@@ -2,7 +2,7 @@
   "name": "DiamondDB",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "src/main.js",
   "scripts": {
     "test": "mocha tests/apiUtils.test.js tests/recordUtils.test.js tests/PLRUCache.test.js"
   },

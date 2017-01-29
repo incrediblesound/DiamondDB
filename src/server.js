@@ -1,4 +1,4 @@
-const Q = require('./Q')
+const Q = require('./Queue')
 const http = require('http')
 
 const headers = {
@@ -13,15 +13,10 @@ const ip = '127.0.0.1'
 module.exports = function(db){
   const q = new Q(db)
 
-  console.log('DiamondDB initializing...')
-  db.init().then(() => {
-    console.log('Initialized, starting server...')
-    const server = http.createServer(requestHandler);
-    server.listen(port, ip);
-    console.log('Server started...')
-    q.start()
-  })
-
+  const server = http.createServer(requestHandler);
+  server.listen(port, ip);
+  console.log('Server started...')
+  q.start()
 
   function requestHandler(req, res){
     console.log('request...')
